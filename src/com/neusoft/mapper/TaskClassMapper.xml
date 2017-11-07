@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.mapper.TaskClassMapper">
+
+	<!-- 获取所有小说分类的名称 -->
+	<select id="getAllClass" resultType="TaskClass">
+		select * from task_class
+	</select>
+    <select id="getAllClassWithTask" resultType="TaskClass">
+        select * from task_class where classid in (select DISTINCT taskclass from task)
+    </select>
+	<!--添加任务分类  -->
+	<insert id="addTaskClass" parameterType="TaskClass">
+		insert into task_class (classname) values (#{classname})
+	</insert>
+	
+	<!--通过分类id删除该分类  -->
+	<delete id="delTaskClassByClassId" parameterType="int">
+		delete from task_class where classid = #{value}
+	</delete>
+	
+	<!-- 通过分类id修改分类信息 -->
+	<update id="updateTaskClassByClassId" parameterType="TaskClass">
+		update task_class set classname = #{classname} where classid = #{classid}
+	</update>
+
+	<!--通过classid得到分类信息  -->
+	<select id="getTaskClass" parameterType="int" resultType="TaskClass">
+		select * from task_class where classid = #{classid}
+	</select>
+</mapper>

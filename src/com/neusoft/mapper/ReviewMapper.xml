@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.mapper.ReviewMapper">
+	
+	<!-- 添加review  -->
+	<insert id="addReview" parameterType="Review">
+		insert into review (taskid,submitid,reviewuserid,reviewusername,reviewbody,reviewtime,score) values(#{taskid},#{submitid},#{reviewuserid},#{reviewusername},#{reviewbody},#{reviewtime},#{score})
+	</insert>
+	
+	<!-- 查看某一用户提交任务的全部review -->
+	<select id="getAllReviewBySubmitid" parameterType="int" resultType="Review">
+		select * from review where submitid = #{value}
+	</select>
+	
+	<!-- 查看某一用户提交任务的review数量-->
+	<select id="getCountBySubmitid" parameterType="int" resultType="int">
+		select count(*) from review where submitid = #{value}
+	</select>
+	
+	<!-- 查看某一用户提交任务的平均得分  -->
+	<select id="getAvgScoreBySubmitid" parameterType="int" resultType="int">
+		select avg(score) from review where submitid = #{value}
+	</select>
+	
+	<!-- 查看某个任务的平均得分 -->
+	<select id="getTaskAvgScore" parameterType="int" resultType="int">
+		select COALESCE(avg(score),0) score from review where taskid = #{value}
+	</select>
+
+	<!--   得到某一用户的全部review数量 -->
+	<select id="getReviewCountsByUserid" parameterType="int" resultType="int">
+		select count(*) from review where reviewuserid = #{value}
+	</select>
+
+</mapper>

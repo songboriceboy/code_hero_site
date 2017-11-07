@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/css/signin.css" rel="stylesheet">
+
+    <script src="assets/js/jquery-1.11.3.min.js"></script>
+    <script src="assets/js/ie-emulation-modes-warning.js"></script>
+    <script>
+        $(function(){
+
+            $('.btn').click(function() {
+
+                str = $(this).val()=="编辑"?"确定":"编辑";
+
+                $(this).val(str);   // 按钮被点击后，在“编辑”和“确定”之间切换
+
+                $(this).parent().siblings("td").each(function() {  // 获取当前行的其他单元格
+
+                    obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+                    if(!obj_text.length)   // 如果没有文本框，则添加文本框使之可以编辑
+
+                        $(this).html("<input type='text' value='"+$(this).text()+"'>");
+
+                    else   // 如果已经存在文本框，则将其显示为文本框修改的值
+
+                        $(this).html(obj_text.val());
+
+                });
+
+            });
+            //给按钮绑定点击事件处理函数
+            $('#input1').click(function () {
+                //1.拿到输入框里的值
+                var txt = $('#input2').val();
+                //2.创建一个li元素
+                var newLi = $('<td></td>');
+                var newtd=$('<td></td>')
+                newtd.html(txt);
+                newLi.html('<input type="button" class="btn btn-warning btn-sm popover-show" value="编辑">');
+                var newtr = $('<tr>'+ newLi +'</tr>');// 创建tr，将td放置到tr中
+                newtr.append(newtd);
+                 newtr.append(newLi);
+                 var table=$('#table1');
+                //3，添加到table的后面
+                table.append(newtr);
+                document.getElementById("hid").style.display="none";
+            })
+
+        });
+        function show(){
+            document.getElementById("hid").style.display="";
+        }
+
+
+
+    </script>
+</head>
+<body>
+<input type="button" value="新增分类" onClick="show();">
+<div id="list" class="list-group-div">
+    <table class="table table-hover" id="table1">
+        <thead>
+        <tr>
+            <th>分类名</th>
+
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td >Tanmay</td>
+            <td><input type="button" class="btn btn-warning btn-sm popover-show" value="编辑" ></td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+<div id="hid" style="display: none">
+    <input type="text" id="input2"><input type="button" value="确定" id="input1" >
+</div>
+</body>
+</html>

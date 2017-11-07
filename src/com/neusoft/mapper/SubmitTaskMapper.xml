@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.mapper.SubmitTaskMapper">
+
+	<!-- 通过taskid得到该任务的全部已提交任务列表() -->
+	<!--<select id="getAllSubmitTaskBytaskid" parameterType="int" resultType="map">-->
+		<!--select userinfo.username as uname, a.*,COALESCE((select avg(score) avgscore from review b where a.submitid = b.submitid and  b.taskid =#{value} group by b.submitid ORDER BY avgscore),0) score-->
+		<!--from submit_task -->
+		<!--join userinfo on a.userid= userinfo.userid-->
+		<!--where a.taskid = #{value}-->
+	<!--</select>-->
+
+	<select id="getAllSubmitTaskBytaskid" parameterType="int" resultType="map">
+	select userinfo.username as uname,submit_task.*
+		from submit_task
+		join userinfo on submit_task.userid= userinfo.userid
+		where submit_task.taskid = #{value}
+	</select>
+
+	<!-- 通过taskid得到该任务的已提交任务列表(得到得分前10) -->
+	<select id="getSubmitTaskByTaskidTopten" parameterType="int" resultType="map">
+	select * ,COALESCE((select avg(score) avgscore from review b where a.submitid = b.submitid and b.taskid =#{value} group by b.submitid ORDER BY avgscore desc limit 0,10),0) score from submit_task a where a.taskid = #{value}
+	</select>
+	
+	<!--  通过submitid得到该提交任务的全部信息 -->
+	<!--<select id="getInfoBySubmitid" parameterType="int" resultType="map">-->
+		<!--select *,(select count(*) from review where submitid = #{value}) count, (select avg(score) from review where submitid = #{value}) avgscore from submit_task where submitid = #{value}-->
+	<!--</select>-->
+
+	<select id="getInfoBySubmitid" parameterType="int" resultType="map">
+		select submit_task.*, task.title as ttitle, userinfo.username as uname from submit_task
+join task on task.taskid = submit_task.taskid
+join userinfo on userinfo.userid = submit_task.userid
+where submitid = #{value}
+	</select>
+
+	<!--&lt;!&ndash;  通过userid得到该用户的全部已提交任务  &ndash;&gt;-->
+	<!--<select id="getAllSubmitTaskByUserid" parameterType="int" resultType="map">-->
+		<!--select *,COALESCE((select avg(score) avgscore from review b where a.submitid = b.submitid group by b.submitid ORDER BY avgscore),0) score,(select count(*) from review b where a.submitid = b.submitid ) reviewnum from submit_task a where a.userid = #{value}-->
+	<!--</select>-->
+	<!--  通过userid得到该用户的全部已提交任务  -->
+	<select id="getAllSubmitTaskByUserid" parameterType="int" resultType="map">
+		select submit_task.*, task.title as tasktitle
+from submit_task
+join task on task.taskid = submit_task.taskid
+ where submit_task.userid = #{value}
+	</select>
+	<!--  通过userid得到该用户的全部已提交任务数量  -->
+	<select id="getSubmitCountsByUserid" parameterType="int" resultType="int">
+		select count(*) from submit_task where userid = #{value}
+	</select>
+	
+	<!-- //通过reviewuserid得到该用户评论的全部已提交任务 -->
+<!--	<select id="getAllReviewByReviewuserid" parameterType="int" resultType="map">
+		select a.*,b.* from submit_task a,review b where a.submitid = b.submitid and b.reviewuserid = #{value}
+	</select>-->
+
+	<select id="getAllReviewByReviewuserid" parameterType="int" resultType="map">
+		select a.*,b.* from submit_task a,review b where a.submitid = b.submitid and b.reviewuserid = #{value}
+	</select>
+	<insert id="addSubmitTask" parameterType="SubmitTask">
+
+		insert into submit_task (taskid,title,userid,username,codeaddress,demo,description,submittime)
+		 values(#{taskid},#{title},#{userid},#{username},#{codeaddress},#{demo},#{description},#{submittime})
+	</insert>
+
+	<select id="checkSubmitTask" parameterType="SubmitTaskInfo" resultType="int">
+		select count(1) from submit_task where taskid = #{taskid} and userid=#{userid}
+	</select>
+
+	<update id="updateSubmitTask" parameterType="SubmitTask">
+
+		update submit_task set codeaddress = #{codeaddress},demo = #{demo},description = #{description} ,submittime = #{submittime}
+		where taskid = #{taskid} and userid = #{userid}
+
+
+	</update>
+
+
+</mapper>

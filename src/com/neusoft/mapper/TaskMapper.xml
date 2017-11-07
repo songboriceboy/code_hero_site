@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.mapper.TaskMapper">
+
+	<!-- 得到全部任务 -->
+	<select id="getAllTask" resultType="TaskWithCount">
+		select task.*,tmpTab.count from task
+
+left join (select count(*) as count,submit_task.taskid from submit_task group by submit_task.taskid) as tmpTab
+
+ on tmpTab.taskid = task.taskid
+	</select>
+
+	<!--添加新的任务  -->
+	<insert id="addTask" parameterType="Task">
+		insert into task (title,difficulty,pubdate,taskclass,taskdetail,markdown)
+		values(#{title},#{difficulty},#{pubdate},#{taskclass},#{taskdetail},#{markdown})
+	</insert>
+
+
+    <update id="updateTask" parameterType="Task">
+        update task set title = #{title}, taskdetail = #{taskdetail},taskclass=#{taskclass},markdown=#{markdown} where taskid = #{taskid}
+    </update>
+	<!-- 添加任务完成数 -->
+	<update id="addSubmission" parameterType="int">
+		update task set submission = submission + 1 where taskid = #{value}
+ 	</update>
+	
+	<!-- 查看任务详情 -->
+	<select id="getTaskDetail" parameterType="int" resultType="Task">
+		select * from task where taskid = #{value}
+	</select>
+	<select id="getTaskDetailWithCount" parameterType="int" resultType="TaskWithCount">
+		select task.*,tmpTab.count from task
+
+left join (select count(*) as count,taskid from submit_task where taskid = #{value}) as tmpTab on tmpTab.taskid = task.taskid
+
+where task.taskid = #{value}
+	</select>
+
+
+</mapper>
